@@ -636,7 +636,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 #pragma mark - Bounce Methods
 -(void)bouncePreviewForDrawerSide:(MMDrawerSide)drawerSide completion:(void(^)(BOOL finished))completion{
     NSParameterAssert(drawerSide!=MMDrawerSideNone);
-    [self bouncePreviewForDrawerSide:drawerSide distance:MMDrawerDefaultBounceDistance completion:nil];
+    [self bouncePreviewForDrawerSide:drawerSide distance:MMDrawerDefaultBounceDistance completion:completion];
 }
 
 -(void)bouncePreviewForDrawerSide:(MMDrawerSide)drawerSide distance:(CGFloat)distance completion:(void(^)(BOOL finished))completion{
@@ -828,11 +828,11 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 }
 
 #pragma mark - Setters
--(void)setRightDrawerViewController:(UIViewController *)rightDrawerViewController{
+- (void)setRightDrawerViewController:(UIViewController *)rightDrawerViewController {
     [self setDrawerViewController:rightDrawerViewController forSide:MMDrawerSideRight];
 }
 
--(void)setLeftDrawerViewController:(UIViewController *)leftDrawerViewController{
+- (void)setLeftDrawerViewController:(UIViewController *)leftDrawerViewController {
     [self setDrawerViewController:leftDrawerViewController forSide:MMDrawerSideLeft];
 }
 
@@ -857,27 +857,27 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     if (drawerSide == MMDrawerSideLeft) {
         _leftDrawerViewController = viewController;
         autoResizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
-        
-    }
-    else if(drawerSide == MMDrawerSideRight){
+    } else if (drawerSide == MMDrawerSideRight) {
         _rightDrawerViewController = viewController;
         autoResizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
     }
     
-    if(viewController){
+    if (viewController) {
         [self addChildViewController:viewController];
         
-        if((self.openSide == drawerSide) &&
-           [self.childControllerContainerView.subviews containsObject:self.centerContainerView]){
+        if ((self.openSide == drawerSide) &&
+           [self.childControllerContainerView.subviews containsObject:self.centerContainerView]) {
             [self.childControllerContainerView insertSubview:viewController.view belowSubview:self.centerContainerView];
+//            [self.childControllerContainerView insertSubview:self.centerContainerView belowSubview:viewController.view];
             [viewController beginAppearanceTransition:YES animated:NO];
             [viewController endAppearanceTransition];
-        }
-        else{
+        } else{
             [self.childControllerContainerView addSubview:viewController.view];
+//            [self.childControllerContainerView sendSubviewToBack:self.centerContainerView];
             [self.childControllerContainerView sendSubviewToBack:viewController.view];
             [viewController.view setHidden:YES];
         }
+        
         [viewController didMoveToParentViewController:self];
         [viewController.view setAutoresizingMask:autoResizingMask];
         [viewController.view setFrame:viewController.mm_visibleDrawerFrame];
